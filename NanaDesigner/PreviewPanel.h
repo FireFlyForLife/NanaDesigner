@@ -21,7 +21,7 @@ public:
 	PreviewPanel(window& wd);
 	virtual ~PreviewPanel();
 
-	string parseRawDiv(const string& raw_div);
+	string parseRawDiv(const string& raw_div) const;
 	void applyRawDiv(const string& raw_div);
 
 	void refresh();

@@ -27,10 +27,6 @@ int main()
 	form fm;
 	fm.caption("Nana UI Editor");
 
-	//Define a label and display a text.
-	label lab{ fm, "Hello, <bold blue size=16>Nana C++ Library</>" };
-	lab.format(true);
-
 	//Define a button and answer the click event.
 	button btn{ fm, "Quit" };
 	btn.events().click([&fm] {
@@ -38,16 +34,13 @@ int main()
 	});
 
 	//Layout management
-	fm.div("vert <menubar weight=25>< <toolkit max=60> <vert <dock <preview>> <vert <code><<widgets><apply_div>> > > >");
-
-	typedef nana::panel<true> preview;
+	fm.div("vert <menubar weight=25>< <toolkit max=60> <vert <dock <preview>> <vert <code><<widgets>< <margin=[5,5] <apply_div>> >> > > >");
 
 	place& root = fm.get_place();
 	place& dockable_root = root.dock<PreviewPanel>("preview", "f");
 	widget* dock = root.dock_create("f");
 
-	PreviewPanel* d = dynamic_cast<PreviewPanel*>(dock);
-	PreviewPanel& pre = *d;
+	PreviewPanel& pre = *static_cast<PreviewPanel*>(dock);
 	
 	pre.applyRawDiv("<><btn>");
 	pre.addWidget<button>("btn", "Buttaaan!");
