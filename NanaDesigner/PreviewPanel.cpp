@@ -32,15 +32,55 @@ string PreviewPanel::parseRawDiv(const string & raw_div) const
 	return div;
 }
 
+void PreviewPanel::applyDiv(const string& div)
+{
+	divStr = div;
+
+	plc.div(divStr.c_str());
+	plc.collocate();
+}
+
 void PreviewPanel::applyRawDiv(const string& raw_div)
 {
 	string div = parseRawDiv(raw_div);
 
-	plc.div(div.c_str());
-	plc.collocate();
+	applyDiv(div);
+}
+
+string PreviewPanel::getDiv() const
+{
+	return divStr;
 }
 
 void PreviewPanel::refresh()
 {
 	plc.collocate();
+}
+
+int PreviewPanel::widgetAmount() const
+{
+	return widgets.size();
+}
+
+void PreviewPanel::removeWidget(widget_pair& pair)
+{
+
+	for (int i = 0; i < widgets.size(); ++i)
+	{
+		if(pair == widgets[i])
+		{
+			removeWidget(i);
+			return;
+		}
+	}
+}
+
+void PreviewPanel::removeWidget(int index)
+{
+	widgets.erase(widgets.begin() + index);
+}
+
+PreviewPanel::widget_pair& PreviewPanel::getWidget(int index)
+{
+	return widgets[index];
 }
