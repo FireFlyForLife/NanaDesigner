@@ -60,6 +60,7 @@ int main()
 
 	textbox divcode{ fm, ""};
 	divcode.multi_lines(true).editable(true);
+	divcode.tip_string("place.div(\"<btn>\");");
 	
 	textbox widgetlist{ fm, "" };
 	widgetlist.multi_lines(true).editable(false);
