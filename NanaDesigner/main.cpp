@@ -18,6 +18,7 @@
 using namespace nana;
 using namespace std;
 
+
 int main()
 {
 	using namespace nana;
@@ -25,6 +26,7 @@ int main()
 
 	//Define a form.
 	form fm;
+
 	fm.caption("Nana UI Editor");
 
 	//Define a label and display a text.
@@ -33,7 +35,7 @@ int main()
 
 	//Define a button and answer the click event.
 	button btn{ fm, "Quit" };
-	btn.events().click([&fm] {
+	btn.events().click([&] {
 		fm.close();
 	});
 
