@@ -22,30 +22,32 @@
 using namespace nana;
 using namespace std;
 
-form fm{ API::make_center(800, 600) };
 
-menubar menuBar{ fm };
-menu& file_menu = menuBar.push_back("File");
-menu& close_menu = menuBar.push_back("Close");
-
-PreviewPanel* preview;
-
-button btnCreate{ fm, "Create" };
-
-group editing_group{ fm };
-button* btnRemove = editing_group.create_child<button>("remove", "Remove");
 
 int main()
 {
 	using namespace nana;
 	using namespace std;
 
+	form fm{ API::make_center(800, 600) };
+
+	menubar menuBar{ fm };
+	menu& file_menu = menuBar.push_back("File");
+	menu& close_menu = menuBar.push_back("Close");
+
+	PreviewPanel* preview;
+
+	button btnCreate{ fm, "Create" };
+
+	group editing_group{ fm };
+	button* btnRemove = editing_group.create_child<button>("remove", "Remove");
+
 	//Edit the form.
 	fm.caption("Nana UI Editor");
 
 	//Define a button and answer the click event.
 	button btn{ fm, "Quit" };
-	btn.events().click([] {
+	btn.events().click([&] {
 		fm.close();
 	});
 
@@ -77,7 +79,7 @@ int main()
 					<widgets>
 					<margin = [5, 5] apply_div> 
 				> 
-			> 
+			>  
 		> 
 	>
 	);
@@ -104,6 +106,7 @@ int main()
 	editing_group.caption("Editing");
 	editing_group.div("vert <remove>");
 
+	//divcode.tip_string("place.div(\"<btn>\");");
 	
 
 	//editing_group["remove"] << btnRemove;
