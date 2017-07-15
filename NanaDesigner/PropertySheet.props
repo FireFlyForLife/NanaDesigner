@@ -4,9 +4,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_PropertySheetDisplayName>NanaDesigner_PropertySheet</_PropertySheetDisplayName>
-    <IncludePath>$(SolutionDir)\..\Cpp_Lib\Nana_1.4.1\nana\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\..\Cpp_Lib\Nana_1.4.1\nana\build\bin;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)lib\nana\build\bin;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)lib\nana\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

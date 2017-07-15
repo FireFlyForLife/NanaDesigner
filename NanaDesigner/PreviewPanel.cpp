@@ -1,4 +1,5 @@
 #include "PreviewPanel.h"
+#include <iostream>
 
 
 PreviewPanel::PreviewPanel(window& wd) : panel(wd)
@@ -34,9 +35,9 @@ string PreviewPanel::parseRawDiv(const string & raw_div) const
 
 void PreviewPanel::applyDiv(const string& div)
 {
+	plc.div(div.c_str());
 	divStr = div;
 
-	plc.div(divStr.c_str());
 	plc.collocate();
 }
 

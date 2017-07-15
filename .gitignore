@@ -1,3 +1,6 @@
+# Lib temp files
+lib/temp
+
 # Compiled Object files
 *.slo
 *.lo

@@ -24,12 +24,18 @@
     <ClCompile Include="PreviewPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DesignerForm.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WidgetAdder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PreviewPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignerForm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

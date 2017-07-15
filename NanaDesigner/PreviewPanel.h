@@ -48,7 +48,6 @@ public:
 
 	widget_pair& getWidget(int index);
 
-
 protected:
 	place plc{ *this };
 	string divStr;
