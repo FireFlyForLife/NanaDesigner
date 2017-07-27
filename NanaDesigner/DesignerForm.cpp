@@ -1,8 +1,8 @@
 ﻿#include "DesignerForm.h"
 #include <iostream>
 #include <nana/gui/widgets/label.hpp>
-
-#define MULTILINE(...) #__VA_ARGS__
+#include "Utils.h"
+#include "ExportViewer.h"
 
 DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 {
@@ -29,7 +29,7 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 
 	get_place().dock<PreviewPanel>("preview", "f");
 	widget* dock = get_place().dock_create("f");
-	preview = static_cast<PreviewPanel*>(dock);
+	preview = dynamic_cast<PreviewPanel*>(dock);
 
 	file_menu.append("New", [this](nana::menu::item_proxy& ip) {
 		this->get_place().dock_create("f");
@@ -37,6 +37,17 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 
 	file_menu.append("Save");
 	file_menu.append("Open");
+	file_menu.append_splitter();
+	file_menu.append("Export", [&](nana::menu::item_proxy& ip)
+	{
+		std::unique_ptr<ExportViewer> export_viewer(new ExportViewer(handle()));
+		json j = export_viewer->GenerateCodeContents(*preview);//TODO: Handle no preview window available
+		std::cout << j << std::endl;
+		export_viewer->GenerateCode(*preview);
+		export_viewer->show();
+		export_viewers.push_back(std::move(export_viewer));
+
+	});
 
 	const char* creating_group_div = MULTILINE(
 		<vert creating margin=[0, 3] gap=5>
@@ -49,6 +60,21 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 	);
 	editing_group.caption("Editing");
 	editing_group.div(editing_group_div);
+
+	btnRemove->events().click([&](const arg_click& click)
+	{
+		auto cat = widgetlist.at(0);
+		auto indices = widgetlist.selected();
+		for( auto selected : indices)
+		{
+			auto item = widgetlist.at(selected);
+			PreviewPanel::widget_pair& pair_ptr = item.value<PreviewPanel::widget_pair>();
+			preview->removeWidget(pair_ptr);
+		}
+
+		RefreshWidgetList();
+		preview->refresh();
+	});
 
 	divcode.multi_lines(true).editable(true);
 	divcode.caption("form.div(\"" + preview->getDiv() + "\");");
@@ -65,13 +91,15 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 		std::cout << "Clicked item! " << arg.item.selected() << std::endl;
 	});
 
-	auto cat = widgetlist.at(0);
-	int widgetAmount = preview->widgetAmount();
-	for (int i = 0; i < widgetAmount; ++i)
-	{
-		auto pair = preview->getWidget(i);
-		cat.append({ pair.first, typeid(*pair.second).name(), pair.second->caption() }); //TODO: Create a 'dictionairy' of the widget types to readable strings
-	}
+//	auto cat = widgetlist.at(0);
+//	int widgetAmount = preview->widgetAmount();
+//	for (int i = 0; i < widgetAmount; ++i)
+//	{
+//		auto pair = preview->getWidget(i);
+//		cat.append({ pair.first, typeid(*pair.second).name(), pair.second->caption() }); //TODO: Create a 'dictionairy' of the widget types to readable strings
+//	}
+
+	RefreshWidgetList();
 
 	apply_div.events().click([&](const nana::arg_click&) {
 		string txt = divcode.caption();
@@ -130,11 +158,16 @@ void DesignerForm::RefreshWidgetList()
 	for (int i = 0; i < widgetAmount; ++i)
 	{
 		auto pair = preview->getWidget(i);
-		cat.append({ pair.first, typeid(*pair.second).name(), pair.second->caption() }); //TODO: Create a 'dictionairy' of the widget types to readable strings
+		cat.append(pair, true); //TODO: Create a 'dictionairy' of the widget types to readable strings
 	}
 }
 
 void DesignerForm::RefreshDivText()
 {
 	divcode.caption("form.div(\"" + preview->getDiv() + "\");");
+}
+
+listbox::oresolver& operator<<(listbox::oresolver& ores, const PreviewPanel::widget_pair& pair)
+{
+	return ores << pair.first << typeid(*pair.second).name() << pair.second->caption();
 }

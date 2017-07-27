@@ -124,13 +124,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DesignerForm.cpp" />
+    <ClCompile Include="ExportViewer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="nana_typeinfo.cpp" />
     <ClCompile Include="PreviewPanel.cpp" />
     <ClCompile Include="WidgetAdder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DesignerForm.h" />
+    <ClInclude Include="ExportViewer.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="nana_typeinfo.h" />
     <ClInclude Include="PreviewPanel.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="WidgetAdder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -10,6 +10,8 @@
 #include "PreviewPanel.h"
 #include <nana/gui/widgets/textbox.hpp>
 #include <stack>
+#include "ExportViewer.h"
+#include "nana_typeinfo.h"
 
 using namespace nana;
 
@@ -73,4 +75,7 @@ protected:
 	button* btnRemove = editing_group.create_child<button>("editing", "Remove");
 
 	std::vector<std::unique_ptr<button>> create_buttons;
+
+private:
+	std::vector<std::unique_ptr<ExportViewer>> export_viewers;
 };

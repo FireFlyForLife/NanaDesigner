@@ -18,12 +18,10 @@
 #include <iostream>
 #include "DesignerForm.h"
 
-#define MULTILINE(...) #__VA_ARGS__
-
 using namespace nana;
 using namespace std;
 
-DesignerForm* main_form;
+DesignerForm* main_form = nullptr;
 
 int main()
 {

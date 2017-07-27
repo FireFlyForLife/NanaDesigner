@@ -55,6 +55,12 @@ string PreviewPanel::getDiv() const
 
 void PreviewPanel::refresh()
 {
+	arg_resized sized;
+	sized.window_handle = handle();
+	sized.height = size().height;
+	sized.width = size().width;
+	events().resized.emit(sized, handle());
+	
 	plc.collocate();
 }
 
@@ -78,6 +84,11 @@ void PreviewPanel::removeWidget(widget_pair& pair)
 
 void PreviewPanel::removeWidget(int index)
 {
+	widget_pair& pair = widgets[index];
+
+	plc.field_display(pair.first.c_str(), false);
+	plc.erase(*pair.second); //TODO: report that just erasing a window doesn't fully clear the lower and right part of the image.
+	plc.field_display(pair.first.c_str(), true);
 	widgets.erase(widgets.begin() + index);
 }
 
