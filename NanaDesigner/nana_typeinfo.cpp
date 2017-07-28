@@ -12,18 +12,6 @@ std::map<string, std::shared_ptr<nana::nanatype>> nana::types
 	typeitem(checkbox, "Checkbox", "checkbox", "checkbox.hpp")
 };
 
-/*using namespace nana;
-
-std::vector<std::shared_ptr<nanatype<widget>>> types;
-
-std::vector<std::shared_ptr<nanatype<widget>>> getall()
-{
-	std::vector<int> types{ 1,2,3,4 };
-	{
-		std::shared_ptr<nanatype<button>>(new nanatype<button>("Button", "button", "button.hpp"))
-
-	};
-}*/
 nanatype& nana::get_nanatype(widget& widget)
 {
 	string name = typeid(widget).name();

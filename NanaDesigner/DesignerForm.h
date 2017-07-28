@@ -60,7 +60,8 @@ protected:
 protected:
 	menubar menuBar{ *this };
 	menu& file_menu = menuBar.push_back("File");
-	menu& close_menu = menuBar.push_back("Close");
+	menu& preview_menu = menuBar.push_back("Preview");
+	menu& schema_menu = menuBar.push_back("Schema");
 	
 	PreviewPanel* preview = nullptr;
 
@@ -77,5 +78,6 @@ protected:
 	std::vector<std::unique_ptr<button>> create_buttons;
 
 private:
-	std::vector<std::unique_ptr<ExportViewer>> export_viewers;
+	//std::vector<std::unique_ptr<ExportViewer>> export_viewers;
+	std::vector < std::unique_ptr<form>> children;
 };

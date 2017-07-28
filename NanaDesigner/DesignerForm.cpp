@@ -3,6 +3,7 @@
 #include <nana/gui/widgets/label.hpp>
 #include "Utils.h"
 #include "ExportViewer.h"
+#include "ResolutionForm.h"
 
 DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 {
@@ -45,8 +46,17 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 		std::cout << j << std::endl;
 		export_viewer->GenerateCode(*preview);
 		export_viewer->show();
-		export_viewers.push_back(std::move(export_viewer));
+		children.push_back(std::move(export_viewer));
 
+	});
+	preview_menu.append("Resolution", [this](menu::item_proxy& ip)
+	{
+		if(preview)
+		{
+			std::unique_ptr<ResolutionForm> resolution_form(new ResolutionForm(handle(), *preview));
+			resolution_form->show();
+			children.push_back(std::move(resolution_form));
+		}
 	});
 
 	const char* creating_group_div = MULTILINE(
@@ -63,7 +73,6 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 
 	btnRemove->events().click([&](const arg_click& click)
 	{
-		auto cat = widgetlist.at(0);
 		auto indices = widgetlist.selected();
 		for( auto selected : indices)
 		{

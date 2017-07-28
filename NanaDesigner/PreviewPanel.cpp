@@ -96,3 +96,14 @@ PreviewPanel::widget_pair& PreviewPanel::getWidget(int index)
 {
 	return widgets[index];
 }
+
+void PreviewPanel::size(const nana::size& newsize)
+{
+	std::cout << "the new size method!" << std::endl;
+	API::move_window(this->parent(), rectangle{ point{0,0}, newsize });
+}
+
+nana::size PreviewPanel::size() const
+{
+	return panel<true>::size();
+}

@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include <nana/system/dataexch.hpp>
 #include <map>
+#include "vector_utils.h"
 
 static nana::rectangle get_absolute_rectangle(int width, int height, window owner)
 {
@@ -52,27 +53,27 @@ ExportViewer::ExportViewer(window window_handle) : form(window_handle, get_absol
 	collocate();
 }
 
-const char* headerStartTemplate = "#include <nana/gui/widgets/form.hpp>\n" "\n\n" MULTILINE(
+const char* headerIncludeStart = "#include <nana/gui/widgets/form.hpp>\n";
+
+const char* headerStartTemplate = "\n\n" MULTILINE(
 using namespace nana;\n\
 \n\
-class myform{\n\
+class myform : public form{\n\
 public:\n\
     myform();\n\
 \n\
 protected:\n\
-    
+
 );
 
-const char* headerEndTemplate = MULTILINE(
+const char* headerEndTemplate = MULTILINE(\
 };
 );
 
 const char* sourceStartTemplate = "#include \"myform.h\"\n" "\n\n" MULTILINE(
 myform::myform()\n\
 {\n\
-    caption("my generated form!");\n\
-\n\
-);
+) "    caption(\"my generated form!\");\n\n";
 
 const char* sourceEndTemplate = MULTILINE(\
 	collocate();\n\
@@ -81,40 +82,43 @@ const char* sourceEndTemplate = MULTILINE(\
 
 void ExportViewer::GenerateCode(PreviewPanel& preview)
 {
+	json contents = GenerateCodeContents(preview);
+
 	const string div = preview.getDiv();
 
-
-	std::map<string, int> tags;
 	string widget_declaration;
 	string widget_assign;
-	for (int i = 0; i < preview.widgetAmount(); ++i)
+	for (auto widget : contents["widgets"])
 	{
-		PreviewPanel::widget_pair& pair = preview.getWidget(i);
-		if(tags.count(pair.first) > 0)
-			tags[pair.first]++;
-		else
-			tags[pair.first] = 0;
-
-		//TODO: Find out how to get the type
-		widget_declaration += "    " "TYPE" " ";
-
-		int tagcount = tags[pair.first];
-		string widgetname = !tagcount ? pair.first : pair.first + std::to_string(tagcount);
+		string type = widget["type"];
+		widget_declaration += ("    " + type + " ");
+		string widgetname = widget["name"];
 		widget_declaration += widgetname;
+		string caption = widget["caption"];
+		widget_declaration += ("{*this, \"" + caption + "\" };\n");
 
-		widget_declaration += "{ *this, \"";
-		widget_declaration += pair.second->caption();
-		widget_declaration += "\" }; \n";
-
-		widget_assign += "    ";
-		widget_assign += "(*this)[\"";
-		widget_assign += pair.first;
-		widget_assign += "\"] << ";
-		widget_assign += widgetname;
-		widget_assign += ";\n";
+		string tag = widget["tag"];
+		widget_assign += ("    (*this)[\"" + tag + "\"] << " + widgetname + ";\n");
+//		int tagcount = tags[pair.first];
+//		string widgetname = !tagcount ? pair.first : pair.first + std::to_string(tagcount);
+//		widget_declaration += widgetname;
+//
+//		widget_declaration += "{ *this, \"";
+//		widget_declaration += pair.second->caption();
+//		widget_declaration += "\" }; \n";
+//
+//		widget_assign += "    ";
+//		widget_assign += "(*this)[\"";
+//		widget_assign += pair.first;
+//		widget_assign += "\"] << ";
+//		widget_assign += widgetname;
+//		widget_assign += ";\n";
 	}
 
-	string header(headerStartTemplate);
+	string header(headerIncludeStart);
+	for (string incl : contents["includes"])
+		header.append("#include <" + incl + ">\n");
+	header.append(headerStartTemplate);
 	header.append(widget_declaration);
 	header.append(headerEndTemplate);
 	headerText.caption(header);
@@ -169,13 +173,14 @@ json ExportViewer::GenerateCodeContents(PreviewPanel& preview)
 			type = nanatype(typeid(*pair.second).name(), typeid(*pair.second).raw_name(), (string(typeid(*pair.second).name()) + "UNKNOWN TYPE").c_str());
 		}
 
-		//if vector doesn't contain string
+		if(vector_indexof(incls, type.include) == -1)
 		{
 			incls.push_back(type.include);
 		}
 
 		contents["widgets"].push_back({
 			{"type", type.internal_name},
+			{"tag", tag},
 			{"name", widgetname},
 			{"caption", pair.second->caption()}
 		});

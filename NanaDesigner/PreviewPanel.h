@@ -48,6 +48,9 @@ public:
 
 	widget_pair& getWidget(int index);
 
+	void size(const nana::size& newsize);
+	nana::size size() const;
+
 protected:
 	place plc{ *this };
 	string divStr;

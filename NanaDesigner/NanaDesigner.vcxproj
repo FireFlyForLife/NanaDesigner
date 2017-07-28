@@ -128,6 +128,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="nana_typeinfo.cpp" />
     <ClCompile Include="PreviewPanel.cpp" />
+    <ClCompile Include="ResolutionForm.cpp" />
     <ClCompile Include="WidgetAdder.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -136,7 +137,9 @@
     <ClInclude Include="json.hpp" />
     <ClInclude Include="nana_typeinfo.h" />
     <ClInclude Include="PreviewPanel.h" />
+    <ClInclude Include="ResolutionForm.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="vector_utils.h" />
     <ClInclude Include="WidgetAdder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
