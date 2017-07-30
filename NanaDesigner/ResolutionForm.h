@@ -9,6 +9,8 @@ using namespace nana;
 
 class ResolutionForm : public form {
 public:
+	const int maxcharacters = 5;
+public:
 	ResolutionForm(window owner, PreviewPanel& preview);
 
 protected:

@@ -15,7 +15,7 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 			<creating>
 			<editing>
 		>
-		<vert <dock <preview>>
+		<vert <notdock <preview>>
 			<vert
 				<code>
 				<
@@ -28,9 +28,10 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 	);
 	div(main_div_text);
 
-	get_place().dock<PreviewPanel>("preview", "f");
-	widget* dock = get_place().dock_create("f");
-	preview = dynamic_cast<PreviewPanel*>(dock);
+	//get_place().dock<PreviewPanel>("preview", "f");
+	//widget* dock = get_place().dock_create("f");
+	//preview = dynamic_cast<PreviewPanel*>(dock);
+	preview = new PreviewPanel(*this);
 
 	file_menu.append("New", [this](nana::menu::item_proxy& ip) {
 		this->get_place().dock_create("f");
@@ -100,14 +101,6 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 		std::cout << "Clicked item! " << arg.item.selected() << std::endl;
 	});
 
-//	auto cat = widgetlist.at(0);
-//	int widgetAmount = preview->widgetAmount();
-//	for (int i = 0; i < widgetAmount; ++i)
-//	{
-//		auto pair = preview->getWidget(i);
-//		cat.append({ pair.first, typeid(*pair.second).name(), pair.second->caption() }); //TODO: Create a 'dictionairy' of the widget types to readable strings
-//	}
-
 	RefreshWidgetList();
 
 	apply_div.events().click([&](const nana::arg_click&) {
@@ -127,7 +120,7 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 			std::cout << "Error applying div text: " << ex.what() << std::endl;
 		}
 	});
-
+	
 	(*this)["menubar"] << menuBar;
 	(*this)["creating"] << creating_group;
 	(*this)["editing"] << editing_group;
@@ -141,6 +134,13 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 	AddCreateWidgetButton<label>("label");
 
 	collocate();
+
+	preview->show();
+}
+
+DesignerForm::~DesignerForm()
+{
+	delete preview; preview = nullptr;
 }
 
 PreviewPanel* DesignerForm::GetPreviewPanel() const
@@ -167,7 +167,7 @@ void DesignerForm::RefreshWidgetList()
 	for (int i = 0; i < widgetAmount; ++i)
 	{
 		auto pair = preview->getWidget(i);
-		cat.append(pair, true); //TODO: Create a 'dictionairy' of the widget types to readable strings
+		cat.append(pair, true);
 	}
 }
 
@@ -178,5 +178,5 @@ void DesignerForm::RefreshDivText()
 
 listbox::oresolver& operator<<(listbox::oresolver& ores, const PreviewPanel::widget_pair& pair)
 {
-	return ores << pair.first << typeid(*pair.second).name() << pair.second->caption();
+	return ores << pair.first << nana::get_nanatype(*pair.second).readable_name << pair.second->caption();
 }

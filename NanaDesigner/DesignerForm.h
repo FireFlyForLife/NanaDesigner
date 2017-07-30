@@ -19,13 +19,14 @@ class DesignerForm : public form
 {
 public:
 	DesignerForm();
+	virtual ~DesignerForm();
 
 	PreviewPanel* GetPreviewPanel() const;
 
 	void Refresh();
 	void RefreshWidgetList();
 	void RefreshDivText();
-	
+
 protected:
 	template<typename T>
 	void AddCreateWidgetButton(const string& widget_name)

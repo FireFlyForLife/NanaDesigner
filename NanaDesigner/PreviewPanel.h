@@ -10,13 +10,13 @@ using namespace nana;
 using std::string;
 using std::shared_ptr;
 
-class PreviewPanel : public panel<true>
+class PreviewPanel : public form
 {
 public:
 	using widget_ptr = std::shared_ptr<widget>;
 	using widget_pair = std::pair<string, widget_ptr>;
 
-	PreviewPanel(window& wd);
+	PreviewPanel(window wd);
 	virtual ~PreviewPanel();
 
 	string parseRawDiv(const string& raw_div) const;
@@ -48,8 +48,8 @@ public:
 
 	widget_pair& getWidget(int index);
 
-	void size(const nana::size& newsize);
-	nana::size size() const;
+//	void size(const nana::size& newsize);
+//	nana::size size() const;
 
 protected:
 	place plc{ *this };
