@@ -53,7 +53,6 @@ ExportViewer::ExportViewer(window window_handle) : form(window_handle, get_absol
 	formName.multi_lines(false).text_align(align::left);
 	formName.events().text_changed([&](const arg_textbox& arg)
 	{
-		//std::cout << "new form name: " << formName.caption() << std::endl;
 		form_name = formName.caption();
 		RefreshText();
 	});
@@ -84,23 +83,6 @@ protected:\n\
 }};\n
 );
 
-//const char* headerIncludeStart = "#pragma once\n" "\n" "#include <nana/gui/widgets/form.hpp>\n";
-//
-//const char* headerStartTemplate = "\n\n" MULTILINE(
-//using namespace nana;\n\
-//\n\
-//class myform : public form{\n\
-//public:\n\
-//    myform();\n\
-//\n\
-//protected:\n\
-//
-//);
-//
-//const char* headerEndTemplate = MULTILINE(\
-//};\n
-//);
-
 const char* SOURCE_TEMPLATE = "#include \"{3}.h\"\n\n{1}" MULTILINE({3}::{3}()\n\
 {{\n\
     caption("my generated form!");\n\
@@ -111,18 +93,6 @@ const char* SOURCE_TEMPLATE = "#include \"{3}.h\"\n\n{1}" MULTILINE({3}::{3}()\n
     collocate();\n\
 }}
 );
-
-//const char* sourceIncludeTemplate = "#include \"myform.h\"\n" "\n\n";
-//
-//const char* sourceStartTemplate = MULTILINE(
-//myform::myform()\n\
-//{\n\
-//) "    caption(\"my generated form!\");\n\n";
-//
-//const char* sourceEndTemplate = MULTILINE(\
-//    collocate();\n\
-//}\n
-//);
 
 void ExportViewer::GenerateCode(PreviewPanel& preview, project_info* info)
 {
@@ -144,51 +114,7 @@ void ExportViewer::GenerateCode(PreviewPanel& preview, project_info* info)
 
 		string tag = widget["tag"];
 		widget_assign += ("    (*this)[\"" + tag + "\"] << " + widgetname + ";\n");
-//		int tagcount = tags[pair.first];
-//		string widgetname = !tagcount ? pair.first : pair.first + std::to_string(tagcount);
-//		widget_declaration += widgetname;
-//
-//		widget_declaration += "{ *this, \"";
-//		widget_declaration += pair.second->caption();
-//		widget_declaration += "\" }; \n";
-//
-//		widget_assign += "    ";
-//		widget_assign += "(*this)[\"";
-//		widget_assign += pair.first;
-//		widget_assign += "\"] << ";
-//		widget_assign += widgetname;
-//		widget_assign += ";\n";
 	}
-
-	//old generation code
-//	string header(headerIncludeStart);
-//	for (string incl : contents["includes"])
-//		header.append("#include <" + incl + ">\n");
-//	header.append(headerStartTemplate);
-//	header.append(widget_declaration);
-//	header.append(headerEndTemplate);
-////	headerText.caption(header);
-//
-//	string src(sourceIncludeTemplate);
-//	bool use_multiline = div.find('\n') != std::string::npos; //if the div contains newlines, use a MULTILINE macro
-//	if (use_multiline) 
-//		src.append("#define MULTILINE(...) #__VA_ARGS__" "\n\n");
-//	src.append(sourceStartTemplate);
-//	if (!use_multiline) {
-//		src.append("    div(\"");
-//		src.append(div);
-//		src.append("\");\n");
-//	}
-//	else
-//	{
-//		src.append("    div(MULTILINE(\n");
-//		src.append(div);
-//		src.append("\n    ));\n");
-//	}
-//	src.append("\n");
-//	src.append(widget_assign);
-//	src.append(sourceEndTemplate);
-////	sourceText.caption(src);
 
 	//header generation
 	for (string incl : contents["includes"])
@@ -249,9 +175,6 @@ json ExportViewer::GenerateCodeContents(PreviewPanel& preview)
 
 		int tagcount = tags[tag];
 		string widgetname = !tagcount ? pair.first : pair.first + std::to_string(tagcount);
-
-//		button* btn = dynamic_cast<button*>(pair.second.get());
-//		nanatype type = nana::get_nanatype(*btn);
 
 		nanatype type;
 
