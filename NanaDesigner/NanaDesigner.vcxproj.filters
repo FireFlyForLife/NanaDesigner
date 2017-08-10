@@ -13,43 +13,37 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Forms">
+      <UniqueIdentifier>{4580a60c-671c-4c33-8120-0171a3c7c290}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Forms">
+      <UniqueIdentifier>{807905e4-8791-4365-872f-fc6004d129f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WidgetAdder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PreviewPanel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DesignerForm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ExportViewer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="nana_typeinfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DesignerForm.cpp">
+      <Filter>Source Files\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportViewer.cpp">
+      <Filter>Source Files\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="PreviewPanel.cpp">
+      <Filter>Source Files\Forms</Filter>
+    </ClCompile>
     <ClCompile Include="ResolutionForm.cpp">
+      <Filter>Source Files\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="format.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="WidgetAdder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PreviewPanel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DesignerForm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ExportViewer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -62,7 +56,19 @@
     <ClInclude Include="vector_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ExportViewer.h">
+      <Filter>Header Files\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="DesignerForm.h">
+      <Filter>Header Files\Forms</Filter>
+    </ClInclude>
     <ClInclude Include="ResolutionForm.h">
+      <Filter>Header Files\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="PreviewPanel.h">
+      <Filter>Header Files\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="format.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

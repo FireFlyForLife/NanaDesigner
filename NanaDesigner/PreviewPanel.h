@@ -10,7 +10,7 @@ using namespace nana;
 using std::string;
 using std::shared_ptr;
 
-class PreviewPanel : public form
+class PreviewPanel : public panel<true>
 {
 public:
 	using widget_ptr = std::shared_ptr<widget>;
@@ -43,10 +43,15 @@ public:
 		return ptr;
 	}
 
+	void addWidget(widget_pair& pair);
+
 	void removeWidget(widget_pair& pair);
 	void removeWidget(int index);
 
 	widget_pair& getWidget(int index);
+
+	widget* getDockarea() const;
+	bool isFloating() const;
 
 //	void size(const nana::size& newsize);
 //	nana::size size() const;

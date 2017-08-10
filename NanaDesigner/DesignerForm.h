@@ -15,8 +15,15 @@
 
 using namespace nana;
 
+struct project_info
+{
+	string name;
+};
+
 class DesignerForm : public form
 {
+public:
+	const string title = "Nana UI Editor";
 public:
 	DesignerForm();
 	virtual ~DesignerForm();
@@ -26,6 +33,7 @@ public:
 	void Refresh();
 	void RefreshWidgetList();
 	void RefreshDivText();
+	void RefreshProjectInfo();
 
 protected:
 	template<typename T>
@@ -35,14 +43,13 @@ protected:
 		btn_ptr->events().click([this]{
 			inputbox::text tagText{ "Placement tag" };
 			inputbox::text captionText{ "Widget caption" };
-
-			//TODO: Make a thread about improving this class, right now it looks awful
+			
 			inputbox ib{ *this, "Enter the widget information                                             ", "Widget Attributes" };
 			ib.verify([&tagText](window wd)
 			{
 				return !tagText.value().empty();
 			});
-
+			
 			if(ib.show(tagText, captionText))
 			{
 				string tag = tagText.value();
@@ -62,7 +69,7 @@ protected:
 	menubar menuBar{ *this };
 	menu& file_menu = menuBar.push_back("File");
 	menu& preview_menu = menuBar.push_back("Preview");
-	menu& schema_menu = menuBar.push_back("Schema");
+	menu& schema_menu = menuBar.push_back("Scheme");
 	
 	PreviewPanel* preview = nullptr;
 
@@ -77,6 +84,8 @@ protected:
 	button* btnRemove = editing_group.create_child<button>("editing", "Remove");
 
 	std::vector<std::unique_ptr<button>> create_buttons;
+
+	project_info* project_info_ = nullptr;
 
 private:
 	//std::vector<std::unique_ptr<ExportViewer>> export_viewers;

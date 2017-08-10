@@ -2,8 +2,9 @@
 #include <iostream>
 
 
-PreviewPanel::PreviewPanel(window wd) : form(wd)
+PreviewPanel::PreviewPanel(window wd) : panel<true>(wd)
 {
+	
 }
 
 
@@ -54,19 +55,19 @@ string PreviewPanel::getDiv() const
 }
 
 void PreviewPanel::refresh()
-{
-	arg_resized sized;
-	sized.window_handle = handle();
-	sized.height = size().height;
-	sized.width = size().width;
-	events().resized.emit(sized, handle());
-	
+{	
 	plc.collocate();
 }
 
 int PreviewPanel::widgetAmount() const
 {
 	return widgets.size();
+}
+
+void PreviewPanel::addWidget(widget_pair& pair)
+{
+	plc.field(pair.first.c_str()) << *pair.second;
+	widgets.push_back(pair);
 }
 
 void PreviewPanel::removeWidget(widget_pair& pair)
@@ -95,6 +96,27 @@ void PreviewPanel::removeWidget(int index)
 PreviewPanel::widget_pair& PreviewPanel::getWidget(int index)
 {
 	return widgets[index];
+}
+
+widget* PreviewPanel::getDockarea() const
+{
+	window dockarea = parent();
+	window dockarea_container = API::get_parent_window(dockarea);
+	string cap = API::window_caption(dockarea_container);
+	std::cout << cap << std::endl;
+	bool is_floating = cap == "Nana Window";
+	widget* dockwidget = API::get_widget(is_floating ? dockarea_container : dockarea);
+
+	return dockwidget;
+}
+
+bool PreviewPanel::isFloating() const
+{
+	window dockarea = parent();
+	window dockarea_container = API::get_parent_window(dockarea);
+	string cap = API::window_caption(dockarea_container);
+
+	return cap == "Nana Window";
 }
 
 //void PreviewPanel::size(const nana::size& newsize)

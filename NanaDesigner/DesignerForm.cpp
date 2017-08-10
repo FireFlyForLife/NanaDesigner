@@ -4,6 +4,11 @@
 #include "Utils.h"
 #include "ExportViewer.h"
 #include "ResolutionForm.h"
+#include <fstream>
+#include <nana/gui/filebox.hpp>
+#include <filesystem>
+
+namespace fs = std::experimental::filesystem;
 
 DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 {
@@ -15,7 +20,7 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 			<creating>
 			<editing>
 		>
-		<vert <notdock <preview>>
+		<vert <dock <preview>>
 			<vert
 				<code>
 				<
@@ -28,24 +33,88 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 	);
 	div(main_div_text);
 
-	//get_place().dock<PreviewPanel>("preview", "f");
-	//widget* dock = get_place().dock_create("f");
-	//preview = dynamic_cast<PreviewPanel*>(dock);
-	preview = new PreviewPanel(*this);
+	get_place().dock<PreviewPanel>("preview", "f");
+	widget* dock = get_place().dock_create("f");
+	preview = dynamic_cast<PreviewPanel*>(dock);
 
 	file_menu.append("New", [this](nana::menu::item_proxy& ip) {
 		this->get_place().dock_create("f");
 	});
 
-	file_menu.append("Save");
-	file_menu.append("Open");
+	file_menu.append("Save", [&](menu::item_proxy& ip)
+	{
+		filebox fb{*this, false};
+		fb.title("GUI Project save file");
+		fb.add_filter("JSON", "*.json;*.JSON");
+		if (fb.show()) {
+			string filename = (fs::path{ fb.file() }.filename().stem().string());
+			std::cout << filename << std::endl;
+			if (ExportViewer::isCorrectName(filename)) {
+				if (!project_info_) project_info_ = new project_info();
+				project_info_->name = filename;
+				std::ofstream ofs(fb.file(), std::ios::binary);
+				json j = json::object();
+				j["name"] = project_info_->name;
+				j["contents"] = ExportViewer::GenerateCodeContents(*preview);
+				ofs << j;
+				RefreshProjectInfo();
+			}
+			else
+			{
+				msgbox mb{ *this, "Wrong filename", msgbox::button_t::ok };
+				mb.icon(msgbox::icon_error);
+				mb << L"You can only enter the characters: [a-z] [A-Z] [0-9] and '_'";
+				mb.show();
+			}
+		}
+	});
+	file_menu.append("Open", [&](menu::item_proxy& ip)
+	{//TODO: Check for unsaved changes
+		filebox fb{ *this, true };
+		fb.title("GUI Project save file");
+		fb.add_filter("JSON", "*.json;*.JSON");
+		if (fb.show()) {
+			std::ifstream ifs(fb.file(), std::ios::binary);
+			json j;
+			j << ifs;
+			if (!project_info_) project_info_ = new project_info();
+			string proj_name = j["name"];
+			project_info_->name = proj_name;
+			json& contents = j["contents"];
+			string div = contents["div"];
+			preview->applyDiv(div);
+			for (int i = preview->widgetAmount() - 1; i >= 0; --i)
+				preview->removeWidget(i);
+			for (json object : contents["widgets"])
+			{
+				nanatype* type = &nana::get_nanatype_by_internalname(object["type"]);
+				string caption = object["caption"];
+				widget* widget = type->instantiate(*preview, caption);
+				if(widget)
+				{
+					string tag = object["tag"];
+
+					PreviewPanel::widget_ptr widget_ptr{ widget };
+					PreviewPanel::widget_pair widget_pair{ tag, widget_ptr };
+
+					preview->addWidget(widget_pair);
+				}
+				else
+				{
+					std::cout << "could not create widget: " << object["type"] << std::endl;
+				}
+			}
+
+			Refresh();
+		}
+	});
 	file_menu.append_splitter();
 	file_menu.append("Export", [&](nana::menu::item_proxy& ip)
 	{
 		std::unique_ptr<ExportViewer> export_viewer(new ExportViewer(handle()));
 		json j = export_viewer->GenerateCodeContents(*preview);//TODO: Handle no preview window available
 		std::cout << j << std::endl;
-		export_viewer->GenerateCode(*preview);
+		export_viewer->GenerateCode(*preview, project_info_);
 		export_viewer->show();
 		children.push_back(std::move(export_viewer));
 
@@ -71,6 +140,42 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 	);
 	editing_group.caption("Editing");
 	editing_group.div(editing_group_div);
+	
+	btnEdit->events().click([&](const arg_click& click)
+	{
+		auto indices = widgetlist.selected();
+		for (auto selected : indices)
+		{
+			auto item = widgetlist.at(selected);
+			PreviewPanel::widget_pair& pair_ptr = item.value<PreviewPanel::widget_pair>();
+			string oldtag = pair_ptr.first;
+			inputbox::text tagText{ "Placement tag", oldtag };
+			inputbox::text captionText{ "Widget caption", pair_ptr.second->caption() };
+
+			inputbox ib{ *this, "Enter the widget information                                             ", "Widget Attributes" };
+			ib.verify([&tagText](window wd)
+			{
+				return !tagText.value().empty();
+			});
+
+			if (ib.show(tagText, captionText))
+			{
+				string tag = tagText.value();
+				string caption = captionText.value();
+
+				pair_ptr.second->caption(caption);
+				if (tag != oldtag)
+				{
+					preview->removeWidget(pair_ptr);
+					pair_ptr.first = tag;
+					preview->addWidget(pair_ptr);
+				}
+
+				preview->refresh();
+				RefreshWidgetList();
+			}
+		}
+	});
 
 	btnRemove->events().click([&](const arg_click& click)
 	{
@@ -87,6 +192,11 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 	});
 
 	divcode.multi_lines(true).editable(true);
+	color fg(colors::blue_violet);
+	color bg(colors::white);
+	divcode.set_highlight("default", fg, bg);
+	divcode.set_keywords("default", true, true,
+	{ "|","%","arrange","collapse","gap","grid","margin","min","max","repeated","variable","vertical","vert","weight" });
 	divcode.caption("form.div(\"" + preview->getDiv() + "\");");
 
 	widgetlist.append_header("Field");
@@ -106,7 +216,6 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 	apply_div.events().click([&](const nana::arg_click&) {
 		string txt = divcode.caption();
 		
-		//TODO: Is there a method to check the div first?
 		string oldDiv = preview->getDiv();
 		try {
 			preview->applyRawDiv(txt);
@@ -140,7 +249,6 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 
 DesignerForm::~DesignerForm()
 {
-	delete preview; preview = nullptr;
 }
 
 PreviewPanel* DesignerForm::GetPreviewPanel() const
@@ -151,6 +259,7 @@ PreviewPanel* DesignerForm::GetPreviewPanel() const
 void DesignerForm::Refresh()
 {
 	preview->refresh();
+	RefreshProjectInfo();
 	RefreshWidgetList();
 	RefreshDivText();
 }
@@ -174,6 +283,18 @@ void DesignerForm::RefreshWidgetList()
 void DesignerForm::RefreshDivText()
 {
 	divcode.caption("form.div(\"" + preview->getDiv() + "\");");
+}
+
+void DesignerForm::RefreshProjectInfo()
+{
+	if(project_info_)
+	{
+		caption(project_info_->name + " - " + title);
+	}
+	else
+	{
+		caption("Untitled" " - " + title);
+	}
 }
 
 listbox::oresolver& operator<<(listbox::oresolver& ores, const PreviewPanel::widget_pair& pair)
