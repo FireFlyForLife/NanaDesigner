@@ -6,10 +6,17 @@
 #include <nana/gui/widgets/checkbox.hpp>
 #include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/textbox.hpp>
+#include <nana/gui/widgets/slider.hpp>
+#include <nana/gui/widgets/menubar.hpp>
+#include <nana/gui/widgets/listbox.hpp>
+#include <nana/gui/widgets/combox.hpp>
+#include "SchemeEditor.h"
 
 #define GENERATE_NANATYPE_ID(widget) typeid(widget).name()
 
 using std::string;
+
+struct SchemeEditorOption;
 
 //TODO: Should this really be in the nana namespace?
 namespace nana
@@ -23,13 +30,14 @@ namespace nana
 		std::string include;
 
 		explicit nanatype(string readable_name = "", string internal_name = "", string include = "", string include_prefix = "nana/gui/widgets/")
+			: readable_name(readable_name), internal_name(internal_name), include(include_prefix + include)
 		{
-			this->readable_name = readable_name;
-			this->internal_name = internal_name; 
-			this->include = include_prefix + include;
 		}
 
-		virtual ~nanatype(){}
+		virtual ~nanatype() {}
+
+		virtual std::vector<SchemeEditorOption*> get_editor_options(window wd, window widget_window, widget* widget) { return {}; }
+		virtual form* get_scheme_editor(window editor_window, widget* widget) { return nullptr; }
 
 		virtual widget* instantiate(window handle = nullptr, const string& caption = "");
 	};
@@ -37,10 +45,33 @@ namespace nana
 	template<typename T>
 	struct specific_nanatype : public nanatype
 	{
+		using scheme_type = typename T::scheme_type;
+
 		explicit specific_nanatype(string readable_name = "", string internal_name = "", string include = "", string include_prefix = "nana/gui/widgets/")
 			: nanatype(readable_name, internal_name, include, include_prefix)
 		{
 			static_assert(std::is_base_of<nana::widget, T>::value, "Type T nana::specific_nanatype needs to be a subclass of nana::widget.");
+		}
+
+		//TODO: Currently unused, and I dont see a use case for it either, should it be removed?
+		std::vector<SchemeEditorOption*> get_editor_options(window wd, window widget_window, widget* widget) override{
+			T* t = static_cast<T*>(widget);
+			if (t)
+				return get_scheme_options<scheme_type>(wd, widget_window, t->scheme());
+			else
+				std::cerr << "Error, could not get Scheme Editor Options, passed widget is not part of this specific_nanatype" << std::endl;
+
+			return {};
+		}
+
+		form* get_scheme_editor(window editor_window, widget* widget) override{
+			T* t = static_cast<T*>(widget);
+			if (t)
+				return new SchemeEditor<T>(editor_window, *t);
+			else
+				std::cerr << "Error, could not create a SchemeEditor, passed widget is not part of this specific_nanatype" << std::endl;
+
+			return{};
 		}
 
 		widget* instantiate(window handle = nullptr, const string& caption = "") override
@@ -54,6 +85,7 @@ namespace nana
 			return t;
 		}
 	};
+
 
 	//TODO: Create class around this for ease of access
 	extern std::map<nanatype::id_t, std::shared_ptr<nanatype>> types;

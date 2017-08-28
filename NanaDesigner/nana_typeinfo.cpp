@@ -1,4 +1,5 @@
 #include "nana_typeinfo.h"
+#include "SchemeEditor.h"
 
 using namespace nana;
 
@@ -17,6 +18,8 @@ widget* nanatype::instantiate(window handle, const string& caption)
 {
 	return nullptr;
 }
+
+
 
 nanatype& nana::get_nanatype(widget& widget)
 {

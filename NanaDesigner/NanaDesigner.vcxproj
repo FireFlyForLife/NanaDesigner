@@ -123,6 +123,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="color_picker.cpp" />
+    <ClCompile Include="color_picker_panel.cpp" />
     <ClCompile Include="DesignerForm.cpp" />
     <ClCompile Include="ExportViewer.cpp" />
     <ClCompile Include="format.cc" />
@@ -130,8 +132,11 @@
     <ClCompile Include="nana_typeinfo.cpp" />
     <ClCompile Include="PreviewPanel.cpp" />
     <ClCompile Include="ResolutionForm.cpp" />
+    <ClCompile Include="SchemeEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="color_picker.h" />
+    <ClInclude Include="color_picker_panel.h" />
     <ClInclude Include="DesignerForm.h" />
     <ClInclude Include="ExportViewer.h" />
     <ClInclude Include="format.h" />
@@ -139,6 +144,7 @@
     <ClInclude Include="nana_typeinfo.h" />
     <ClInclude Include="PreviewPanel.h" />
     <ClInclude Include="ResolutionForm.h" />
+    <ClInclude Include="SchemeEditor.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="vector_utils.h" />
   </ItemGroup>

@@ -1,6 +1,18 @@
 #include "PreviewPanel.h"
 #include <iostream>
 
+template <typename T>
+PreviewPanel::placed_widget<T>::placed_widget()
+{
+
+}
+
+template <typename T>
+PreviewPanel::placed_widget<T>::placed_widget(string tag, widget_ptr widget)
+	: tag(tag), widget(widget)
+{
+}
+
 
 PreviewPanel::PreviewPanel(window wd) : panel<true>(wd)
 {

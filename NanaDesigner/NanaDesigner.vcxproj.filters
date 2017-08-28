@@ -42,6 +42,15 @@
     <ClCompile Include="format.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SchemeEditor.cpp">
+      <Filter>Source Files\Forms</Filter>
+    </ClCompile>
+    <ClCompile Include="color_picker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="color_picker_panel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils.h">
@@ -69,6 +78,15 @@
       <Filter>Header Files\Forms</Filter>
     </ClInclude>
     <ClInclude Include="format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SchemeEditor.h">
+      <Filter>Header Files\Forms</Filter>
+    </ClInclude>
+    <ClInclude Include="color_picker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="color_picker_panel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -16,6 +16,18 @@ public:
 	using widget_ptr = std::shared_ptr<widget>;
 	using widget_pair = std::pair<string, widget_ptr>;
 
+	template<typename T>
+	struct placed_widget
+	{
+		string tag;
+		widget_ptr widget = nullptr;
+
+		placed_widget();
+		placed_widget(string tag, widget_ptr widget);
+
+		
+	};
+
 	PreviewPanel(window wd);
 	virtual ~PreviewPanel();
 

@@ -7,6 +7,9 @@
 #include <fstream>
 #include <nana/gui/filebox.hpp>
 #include <filesystem>
+#include <nana/gui/widgets/spinbox.hpp>
+#include "color_picker_panel.h"
+#include "SchemeEditor.h"
 
 namespace fs = std::experimental::filesystem;
 
@@ -129,6 +132,32 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 		}
 	});
 
+	schema_menu.append("Scheme editor", [this](menu::item_proxy& ip)
+	{
+		auto indices = widgetlist.selected();
+		for (auto selected : indices)
+		{
+			auto item = widgetlist.at(selected);
+			PreviewPanel::widget_pair& pair_ptr = item.value<PreviewPanel::widget_pair>();
+			string tag = pair_ptr.first;
+			PreviewPanel::widget_ptr widget_ptr = pair_ptr.second;
+
+			nanatype& type = nana::get_nanatype(*widget_ptr);
+			form* scheme_editor = type.get_scheme_editor(*this, widget_ptr.get());
+			
+			//SchemeEditor<button>* scheme_editor = new SchemeEditor<button>(*this, apply_div);
+			scheme_editor->show();
+			children.emplace_back(scheme_editor);
+		}
+
+		if(indices.size() <= 0)
+		{
+			msgbox err{ *this, "Please select a widget", msgbox::button_t::ok };
+			err << "No widget selected in the widgetlist";
+			err.show();
+		}
+	});
+
 	const char* creating_group_div = MULTILINE(
 		<vert creating margin=[0, 3] gap=5>
 	);
@@ -210,6 +239,7 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 	{
 		std::cout << "Clicked item! " << arg.item.selected() << std::endl;
 	});
+	widgetlist.scheme();
 
 	RefreshWidgetList();
 
