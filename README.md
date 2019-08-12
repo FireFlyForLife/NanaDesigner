@@ -1,7 +1,7 @@
 # NanaDesigner
 A GUI Designer built with and for the NanaPro gui library
 
-![picture of the ui editor](https://imgur.com/a/pELxDDb)
+![picture of the ui editor](https://i.imgur.com/M0735lo.png)
 
 ## Features
 - Quick prototyping of `div`s.
@@ -11,8 +11,8 @@ A GUI Designer built with and for the NanaPro gui library
 - Export to C++ header/source file using a text template.
 - Set resolution of the window.
 
-![picture of a heavily modified form](https://imgur.com/a/pFH1PPG)
-![picture of that same form, with export window](https://imgur.com/a/nbcjFlQ)
+![picture of a heavily modified form](https://i.imgur.com/ZXfzVKG.png)
+![picture of that same form, with export window](https://i.imgur.com/k2DTJNV.png)
 
 ## How to get it
 Download the latest release from https://github.com/FireFlyForLife/NanaDesigner/releases.
