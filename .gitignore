@@ -1,5 +1,6 @@
 # Lib temp files
 build
+external/temp/nana
 
 # Compiled Object files
 *.slo
