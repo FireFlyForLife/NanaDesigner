@@ -67,9 +67,11 @@ std::vector<SchemeEditorOption*> get_scheme_options<drawerbase::listbox::scheme>
 	option_unsigned(max_fit_content)
 	option_unsigned(min_column_width)
 
-	option_unsigned(suspension_width)
+	//TODO: I removed these, were they depricated?
+	// option_unsigned(suspension_width)
 	option_unsigned(text_margin)
-	option_unsigned(header_height)
+	//TODO: I removed thse, were they depcecated?
+	// option_unsigned(header_height)
 	option_unsigned(item_height_ex)
 	option_unsigned(header_splitter_area_before)
 	option_unsigned(header_splitter_area_after)
@@ -79,8 +81,8 @@ std::vector<SchemeEditorOption*> get_scheme_options<drawerbase::listbox::scheme>
 	mwheel_option->editor = new MouseParameter_SchemeEditorOption(wd, widget_window, scheme_editor.mouse_wheel);
 
 	std::vector<SchemeEditorOption*> options_1{header_bgcolor, header_fgcolor, header_grabbed, header_floated,
-		item_selected, item_highlighted, selection_box, max_fit_content, min_column_width, suspension_width, text_margin,
-		header_height, item_height_ex, header_splitter_area_before, header_splitter_area_after, mwheel_option};
+		item_selected, item_highlighted, selection_box, max_fit_content, min_column_width, /*suspension_width,*/ text_margin,
+		/*header_height,*/ item_height_ex, header_splitter_area_before, header_splitter_area_after, mwheel_option};
 
 	std::vector<SchemeEditorOption*> options = get_scheme_options<widget_geometrics>(wd, widget_window, scheme_editor);
 	options.insert(options.end(), options_1.begin(), options_1.end());

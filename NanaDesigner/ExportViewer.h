@@ -5,7 +5,7 @@
 #include <nana/gui/widgets/button.hpp>
 #include <nana/system/dataexch.hpp>
 #include "PreviewPanel.h"
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 #include "nana_typeinfo.h"
 
 struct project_info;

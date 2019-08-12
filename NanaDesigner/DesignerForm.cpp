@@ -11,7 +11,7 @@
 #include "color_picker_panel.h"
 #include "SchemeEditor.h"
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 {
@@ -49,13 +49,16 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 		filebox fb{*this, false};
 		fb.title("GUI Project save file");
 		fb.add_filter("JSON", "*.json;*.JSON");
-		if (fb.show()) {
-			string filename = (fs::path{ fb.file() }.filename().stem().string());
+		fb.allow_multi_select(false);
+		std::vector path_parts = fb.show();
+		if (!path_parts.empty()) {
+			fs::path selected_path = path_parts[0];
+			string filename = (selected_path.filename().stem().string());
 			std::cout << filename << std::endl;
 			if (ExportViewer::isCorrectName(filename)) {
 				if (!project_info_) project_info_ = new project_info();
 				project_info_->name = filename;
-				std::ofstream ofs(fb.file(), std::ios::binary);
+				std::ofstream ofs(selected_path, std::ios::binary);
 				json j = json::object();
 				j["name"] = project_info_->name;
 				j["contents"] = ExportViewer::GenerateCodeContents(*preview);
@@ -76,8 +79,11 @@ DesignerForm::DesignerForm() : form(API::make_center(800, 600))
 		filebox fb{ *this, true };
 		fb.title("GUI Project save file");
 		fb.add_filter("JSON", "*.json;*.JSON");
-		if (fb.show()) {
-			std::ifstream ifs(fb.file(), std::ios::binary);
+		fb.allow_multi_select(false);
+		std::vector selectedPaths = fb.show();
+		if (!selectedPaths.empty()) {
+			fs::path selectedPath = selectedPaths[0];
+			std::ifstream ifs(selectedPath, std::ios::binary);
 			json j;
 			j << ifs;
 			if (!project_info_) project_info_ = new project_info();

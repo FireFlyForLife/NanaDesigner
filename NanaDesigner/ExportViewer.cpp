@@ -4,10 +4,11 @@
 #include <map>
 #include "vector_utils.h"
 #include "DesignerForm.h"
-#include "format.h"
+#include "inja/inja.hpp"
 #include <filesystem>
+#include <string_view>
 
-namespace fs = std::experimental::filesystem;
+namespace fs = std::filesystem;
 
 static nana::rectangle get_absolute_rectangle(int width, int height, window owner)
 {
@@ -70,20 +71,55 @@ ExportViewer::ExportViewer(window window_handle) : form(window_handle, get_absol
 	collocate();
 }
 
-const char* HEADER_TEMPLATE = "#pragma once\n\n" "#include <nana/gui/widgets/form.hpp>\n" "{0}" "\n\n" MULTILINE(
+///A Marco which allows you to write strings with newlines in them
+#define MULTILINE(...) #__VA_ARGS__
+
+const char* HEADER_TEMPLATE_OLD = "#pragma once\n\n" "#include <nana/gui/widgets/form.hpp>\n" "{0}" "\n\n" MULTILINE(
 using namespace nana; \n\
 \n\
-class {2} : public form {{
+class {{2}} : public form {
 \n\
 public:\n\
-    {2}(); \n\
+    {{2}}(); \n\
 	\n\
 protected:\n\
-    {1}\
-}};\n
+    {{1}}\
+};\n
 );
 
-const char* SOURCE_TEMPLATE = "#include \"{3}.h\"\n\n{1}" MULTILINE({3}::{3}()\n\
+constexpr std::string_view HEADER_TEMPLATE = 
+R"(#pragma once
+
+#include <nana/gui/widgets/form.hpp>
+{{includes}}
+
+using namespace nana;
+
+class {{form_name}} : public form {
+
+public:
+    {{form_name}}();
+	
+protected:
+    {{header_widgetlist}}
+};
+)";
+
+constexpr std::string_view SOURCE_TEMPLATE = 
+R"(#include "{{form_name}}.h"
+
+{{multiline_declaration}}{{form_name}}::{{form_name}}()
+{
+	caption("my generated form");
+
+	{{div_code}}
+
+	{{widget_assignment}}
+	collocate();
+}
+)";
+
+const char* SOURCE_TEMPLATE_OLD = "#include \"{3}.h\"\n\n{1}" MULTILINE({3}::{3}()\n\
 {{\n\
     caption("my generated form!");\n\
     \n\
@@ -143,8 +179,19 @@ void ExportViewer::GenerateCode(PreviewPanel& preview, project_info* info)
 
 void ExportViewer::RefreshText()
 {
-	string header_code = fmt::format(HEADER_TEMPLATE, includes, header_widgetlist, form_name);
-	string source_code = fmt::format(SOURCE_TEMPLATE, widget_assignment, multiline_declaration, div_code, form_name);
+	json data{
+		{"includes", includes},
+		{"header_widgetlist", header_widgetlist},
+		{"form_name", form_name},
+		{"widget_assignment", widget_assignment},
+		{"multiline_declaration", multiline_declaration},
+		{"div_code", div_code},
+		{"form_name", form_name}
+	};
+	string header_code = inja::render(HEADER_TEMPLATE, data);
+	string source_code = inja::render(SOURCE_TEMPLATE, data);
+	// string header_code = fmt::format(HEADER_TEMPLATE, includes, header_widgetlist, form_name);
+	// string source_code = fmt::format(SOURCE_TEMPLATE, widget_assignment, multiline_declaration, div_code, form_name);
 
 	headerText.caption(header_code);
 	sourceText.caption(source_code);

@@ -3,6 +3,7 @@
 #include <nana/gui/widgets/button.hpp>
 #include <nana/gui/widgets/checkbox.hpp>
 #include <nana/gui/widgets/spinbox.hpp>
+#include <nana/gui.hpp>
 
 namespace nana {
 	class color_picker;

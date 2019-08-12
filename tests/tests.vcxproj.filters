@@ -19,7 +19,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\NanaDesigner\nana_1.5.1.props" />
-  </ItemGroup>
 </Project>

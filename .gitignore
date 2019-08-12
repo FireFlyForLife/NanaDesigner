@@ -1,5 +1,5 @@
 # Lib temp files
-lib/temp
+build
 
 # Compiled Object files
 *.slo

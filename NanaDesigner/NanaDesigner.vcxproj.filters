@@ -39,9 +39,6 @@
     <ClCompile Include="ResolutionForm.cpp">
       <Filter>Source Files\Forms</Filter>
     </ClCompile>
-    <ClCompile Include="format.cc">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SchemeEditor.cpp">
       <Filter>Source Files\Forms</Filter>
     </ClCompile>
@@ -54,9 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="nana_typeinfo.h">
@@ -76,9 +70,6 @@
     </ClInclude>
     <ClInclude Include="PreviewPanel.h">
       <Filter>Header Files\Forms</Filter>
-    </ClInclude>
-    <ClInclude Include="format.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SchemeEditor.h">
       <Filter>Header Files\Forms</Filter>
